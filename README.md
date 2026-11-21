@@ -205,7 +205,7 @@ The `web_app/` folder contains a [Streamlit](https://streamlit.io/) application 
  
 | Lung CT Scan | Chest X-Ray with Grad-CAM |
 |:---:|:---:|
-| ![Lung CT interface](<img width="931" height="878" alt="WebAppSS" src="https://github.com/user-attachments/assets/999421de-1a4a-4d08-88e1-fa27d996483e" />) | ![Chest X-ray interface with Grad-CAM](<img width="927" height="909" alt="WebAppSS1" src="https://github.com/user-attachments/assets/872c7e74-3bb9-46e7-b89a-a0334fd0ff11" />) |
+|<img width="931" height="878" alt="WebAppSS" src="https://github.com/user-attachments/assets/0f913329-65fa-4b44-893b-96bb9af7585b" /> | <img width="927" height="909" alt="WebAppSS1" src="https://github.com/user-attachments/assets/cc754f1b-0d1d-4a63-9e8c-30b60afc72c8" />|
  
 ### Features
  
