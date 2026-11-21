@@ -1,10 +1,8 @@
-# FeLASwin-Net: Lightweight CNN–Swin Transformer Hybrid for Lung Disease Classification
+# FeLASwin-Net: Dual Modality Lung Disease Classification
 
 Source code and implementation details for our journal paper on lung disease classification from **CT scans** and **chest X-ray** images.
 
 **FeLASwin-Net** is a lightweight hybrid architecture that combines a convolutional front-end (residual blocks with a **FETLE** module and **AMSFA** downsampling) with shifted-window Swin Transformer blocks. The same pipeline is applied to two imaging modalities (CT and chest X-ray) by changing only the dataset.
-
-> **Paper:** *[Add title, authors, journal, DOI/link here]*
 
 ---
 
@@ -207,9 +205,7 @@ The `web_app/` folder contains a [Streamlit](https://streamlit.io/) application 
  
 | Lung CT Scan | Chest X-Ray with Grad-CAM |
 |:---:|:---:|
-| ![Lung CT interface](<img width="931" height="878" alt="WebAppSS" src="https://github.com/user-attachments/assets/999421de-1a4a-4d08-88e1-fa27d996483e" />
-) | ![Chest X-ray interface with Grad-CAM](<img width="927" height="909" alt="WebAppSS1" src="https://github.com/user-attachments/assets/872c7e74-3bb9-46e7-b89a-a0334fd0ff11" />
-) |
+| ![Lung CT interface](<img width="931" height="878" alt="WebAppSS" src="https://github.com/user-attachments/assets/999421de-1a4a-4d08-88e1-fa27d996483e" />) | ![Chest X-ray interface with Grad-CAM](<img width="927" height="909" alt="WebAppSS1" src="https://github.com/user-attachments/assets/872c7e74-3bb9-46e7-b89a-a0334fd0ff11" />) |
  
 ### Features
  
@@ -236,7 +232,5 @@ web_app/models/felaswin_xray.pth
 ```
  
 If a weight file is missing, the app shows a warning and runs with untrained weights (UI demonstration only, so predictions are meaningless).
- 
-> **Note:** the web app's Grad-CAM is the standard Grad-CAM for quick interactive explanations. The paper's XAI evaluation (Grad-CAM++, Score-CAM, Transition Matrix Heatmap, Deletion/Insertion AUC) is in the notebooks under `codes/`.
- 
+
 > **Medical disclaimer:** the app is a research demo, not a medical device. Its output must be confirmed by a licensed radiologist.
