@@ -1,0 +1,428 @@
+<!-- clinical_design.html -->
+<style>
+    /* Fonts: Inter for UI, IBM Plex Mono for the probability list */
+    @import url('https://fonts.googleapis.com/css2?family=Inter:wght@400;600;700;800&family=IBM+Plex+Mono:wght@400;500;600&display=swap');
+
+    /* =====================================================================
+       Clinical palette: Deep Purple 600 (#5E35B1) and 400 (#7E57C2) gradient
+       ===================================================================== */
+    :root {
+        --c-bg:        #F4F0FA;   /* Soft deep purple background (shade 50 tint) */
+        --c-card:      #FFFFFF;   /* Card surface */
+        --c-line:      #D1C4E9;   /* Card / input outlines (deepPurple[100]) */
+        --c-ink:       #1F0E4D;   /* Primary dark text */
+        --c-muted:     #512DA8;   /* Secondary text (deepPurple[700]) */
+        --c-navy:      #5E35B1;   /* deepPurple[600] */
+        --c-blue:      #7E57C2;   /* deepPurple[400] */
+        --c-blue-600:  #5E35B1;   /* deepPurple[600] */
+        --c-blue-50:   #EDE7F6;   /* deepPurple[50] */
+        --c-teal-a:    #0F766E;   /* Grad-CAM action button */
+        --c-teal-b:    #14A39A;
+    }
+
+    /* Global font + page background (forces the light clinical look in any browser theme) */
+    html, body, [class*="css"] { font-family: 'Inter', sans-serif; }
+    .stApp, [data-testid="stAppViewContainer"] { background: var(--c-bg); color: var(--c-ink); }
+
+    /* Clean chrome, but keep the sidebar toggle reachable on mobile */
+    #MainMenu, footer, [data-testid="stToolbar"], [data-testid="stDecoration"] { visibility: hidden; }
+    [data-testid="stHeader"] { background: transparent; }
+
+    /* A4 portrait column (794 px = 210 mm @ 96 dpi), centred, fluid on phones */
+    [data-testid="stMainBlockContainer"], .block-container {
+        max-width: 980px !important;
+        padding: 1.8rem 1.5rem 3rem !important;
+    }
+
+    /* Header Banner */
+    .clinical-header {
+        background: linear-gradient(135deg, #5E35B1 0%, #7E57C2 100%);
+        padding: 1.8rem 1.5rem;
+        border-radius: 16px;
+        color: white;
+        text-align: center;
+        box-shadow: 0 6px 18px rgba(94, 53, 177, 0.22);
+        margin-bottom: 1.5rem;
+    }
+    .clinical-header h1 {
+        margin: 0;
+        font-weight: 800;
+        font-size: 2.1rem;
+        letter-spacing: -0.5px;
+    }
+    .clinical-header p {
+        margin: 8px 0 0;
+        font-size: 1rem;
+        opacity: 0.92;
+    }
+
+    /* Rounded White Card Containers */
+    .st-key-modality_panel,
+    .st-key-upload_panel,
+    .fl-card {
+        box-sizing: border-box;
+        background: var(--c-card) !important;
+        border: 1px solid var(--c-line) !important;
+        border-radius: 16px !important;
+        box-shadow: 0 4px 16px rgba(94, 53, 177, 0.06) !important;
+    }
+    .st-key-modality_panel, .st-key-upload_panel { padding: 20px 22px 22px; margin-bottom: 1rem; }
+    .fl-card { padding: 22px 24px 24px; margin-bottom: 1rem; }
+
+    .fl-card-head { margin-bottom: 14px; }
+    .fl-card-title {
+        color: var(--c-navy);
+        font-weight: 800;
+        font-size: 1.2rem;
+        letter-spacing: -0.2px;
+    }
+    .fl-card-sub { margin-top: 3px; color: var(--c-muted); font-size: 0.85rem; }
+        
+
+    /* =====================================================================
+       Modality Selector (Fixed 2-Tile Target)
+       ===================================================================== */
+    .st-key-modality_panel [data-testid="stRadio"] [role="radiogroup"] {
+        display: grid !important;
+        grid-template-columns: 1fr 1fr;
+        gap: 12px;
+        width: 100%;
+    }
+    
+    .st-key-modality_panel [data-testid="stRadio"] > label {
+        display: none !important;
+    }
+
+    .st-key-modality_panel [data-testid="stRadio"] [role="radiogroup"] label {
+        display: flex !important;
+        flex-direction: column;
+        align-items: center;
+        justify-content: center;
+        gap: 6px;
+        margin: 0;
+        padding: 16px 10px;
+        text-align: center;
+        cursor: pointer;
+        background: var(--c-blue-50);
+        border: 1.5px solid var(--c-line);
+        border-radius: 14px;
+        color: var(--c-navy);
+        transition: all 0.2s ease;
+    }
+    
+    .st-key-modality_panel [data-testid="stRadio"] [role="radiogroup"] label:hover {
+        border-color: var(--c-blue);
+        background: #E0D4F5;
+    }
+    
+    .st-key-modality_panel [data-testid="stRadio"] [role="radiogroup"] label > div:first-child { display: none; }
+    .st-key-modality_panel [data-testid="stRadio"] [role="radiogroup"] label * { color: inherit; }
+    .st-key-modality_panel [data-testid="stRadio"] [role="radiogroup"] label p {
+        margin: 0;
+        font-weight: 700;
+        font-size: 0.98rem;
+    }
+    
+    .st-key-modality_panel [data-testid="stRadio"] [role="radiogroup"] label::before {
+        content: "";
+        width: 36px;
+        height: 36px;
+        background-color: currentColor;
+        -webkit-mask: var(--fl-icon) center / contain no-repeat;
+        mask: var(--fl-icon) center / contain no-repeat;
+    }
+    
+    .st-key-modality_panel [data-testid="stRadio"] [role="radiogroup"] label::after {
+        font-size: 0.72rem;
+        font-weight: 500;
+        opacity: 0.85;
+    }
+    
+    /* 1st Tile = Lung CT Scan (targeting wrapper child 1) */
+    .st-key-modality_panel [data-testid="stRadio"] [role="radiogroup"] > *:nth-child(1) label {
+        --fl-icon: url("data:image/svg+xml,%3Csvg xmlns='http://www.w3.org/2000/svg' viewBox='0 0 24 24' fill='none' stroke='black' stroke-width='1.8' stroke-linecap='round' stroke-linejoin='round'%3E%3Cpath d='M12 3v8'/%3E%3Cpath d='M12 11l-3 2.2M12 11l3 2.2'/%3E%3Cpath d='M9.2 8.6C6.6 8.8 4.2 12.6 4 17c-.1 2.2.9 3.3 2.5 3.2 1.7-.1 2.7-1.2 2.7-3z'/%3E%3Cpath d='M14.8 8.6c2.6.2 5 4 5.2 8.4.1 2.2-.9 3.3-2.5 3.2-1.7-.1-2.7-1.2-2.7-3z'/%3E%3C/svg%3E");
+    }
+    .st-key-modality_panel [data-testid="stRadio"] [role="radiogroup"] > *:nth-child(1) label::after { 
+        content: "Benign · Malignant · Normal"; 
+    }
+    
+    /* 2nd Tile = Chest X-Ray (targeting wrapper child 2) */
+    .st-key-modality_panel [data-testid="stRadio"] [role="radiogroup"] > *:nth-child(2) label {
+        --fl-icon: url("data:image/svg+xml,%3Csvg xmlns='http://www.w3.org/2000/svg' viewBox='0 0 24 24' fill='none' stroke='black' stroke-width='1.8' stroke-linecap='round' stroke-linejoin='round'%3E%3Crect x='3.5' y='3.5' width='17' height='17' rx='3'/%3E%3Cpath d='M12 6.5v11'/%3E%3Cpath d='M12 9c-2.2-.4-3.7.4-4.8 2M12 12c-2.2-.4-3.7.4-4.8 2M12 15c-2.2-.4-3.7.4-4.8 2'/%3E%3Cpath d='M12 9c2.2-.4 3.7.4 4.8 2M12 12c2.2-.4 3.7.4 4.8 2M12 15c2.2-.4 3.7.4 4.8 2'/%3E%3C/svg%3E");
+    }
+    .st-key-modality_panel [data-testid="stRadio"] [role="radiogroup"] > *:nth-child(2) label::after { 
+        content: "COVID-19 · Pneumonia · Normal"; 
+    }
+    
+    /* Selected Tile Active Style */
+    .st-key-modality_panel [data-testid="stRadio"] [role="radiogroup"] label:has(input:checked) {
+        background: linear-gradient(135deg, #5E35B1 0%, #7E57C2 100%);
+        border-color: transparent;
+        color: #FFFFFF;
+        box-shadow: 0 4px 14px rgba(94, 53, 177, 0.32);
+    }
+
+    /* =====================================================================
+       Upload card
+       ===================================================================== */
+    .st-key-upload_panel [data-testid="stFileUploaderDropzone"] {
+        align-items: center;
+        padding: 16px 18px;
+        background: var(--c-blue-50);
+        border: 2px dashed var(--c-blue);
+        border-radius: 12px;
+        transition: border-color 0.2s ease, background 0.2s ease;
+    }
+    .st-key-upload_panel [data-testid="stFileUploaderDropzone"]:hover {
+        border-color: var(--c-navy);
+        background: #E0D4F5;
+    }
+    /* swap the default cloud icon for an image + magnifier icon */
+    .st-key-upload_panel [data-testid="stFileUploaderDropzone"] svg { display: none; }
+    .st-key-upload_panel [data-testid="stFileUploaderDropzoneInstructions"]::before {
+        content: "";
+        display: block;
+        flex: none;
+        width: 46px;
+        height: 46px;
+        margin-right: 12px;
+        background: url("data:image/svg+xml,%3Csvg xmlns='http://www.w3.org/2000/svg' viewBox='0 0 48 48'%3E%3Crect x='3' y='7' width='34' height='28' rx='4' fill='%23EDE7F6' stroke='%237E57C2' stroke-width='2'/%3E%3Cpath d='M7 31l9-10 7 7 5-5 6 8z' fill='%23B39DDB'/%3E%3Ccircle cx='30' cy='26' r='9' fill='%23fff' stroke='%235E35B1' stroke-width='3'/%3E%3Cpath d='M37 33l8 8' stroke='%235E35B1' stroke-width='4' stroke-linecap='round'/%3E%3C/svg%3E") center / contain no-repeat;
+    }
+    .st-key-upload_panel [data-testid="stFileUploaderDropzoneInstructions"] span { font-size: 0; line-height: 0; }
+    .st-key-upload_panel [data-testid="stFileUploaderDropzoneInstructions"] span::after {
+        content: "Drag and drop files here";
+        font-size: 1.02rem;
+        line-height: 1.4;
+        font-weight: 600;
+        color: var(--c-navy);
+    }
+    .st-key-upload_panel [data-testid="stFileUploaderDropzoneInstructions"] small { color: var(--c-muted); }
+    /* "Browse files" button */
+    .st-key-upload_panel [data-testid="stFileUploaderDropzone"] button {
+        background: linear-gradient(135deg, #5E35B1 0%, #7E57C2 100%);
+        border: none;
+        border-radius: 8px;
+        padding: 0.35rem 0.95rem;
+        font-weight: 700;
+    }
+    .st-key-upload_panel [data-testid="stFileUploaderDropzone"] button,
+    .st-key-upload_panel [data-testid="stFileUploaderDropzone"] button * { color: #FFFFFF; }
+    /* uploaded file chip */
+    .st-key-upload_panel [data-testid="stFileUploaderFile"] {
+        background: #FFFFFF;
+        border: 1px solid var(--c-line);
+        border-radius: 10px;
+    }
+    .st-key-upload_panel [data-testid="stFileUploaderFile"],
+    .st-key-upload_panel [data-testid="stFileUploaderFile"] * { color: var(--c-ink); }
+
+    /* image preview (PACS-style black viewer) */
+    .fl-preview {
+        position: relative;
+        box-sizing: border-box;
+        height: 340px;
+        padding: 10px;
+        background: #04080F;
+        border-radius: 14px;
+        border: 1px solid #0B1B30;
+        box-shadow: 0 4px 14px rgba(15, 42, 67, 0.18);
+    }
+    .fl-preview-stage {
+        height: 100%;
+        display: flex;
+        align-items: center;
+        justify-content: center;
+    }
+    .fl-preview-stage img { max-width: 100%; max-height: 100%; object-fit: contain; border-radius: 4px; }
+    .fl-badge {
+        position: absolute;
+        top: 16px;
+        left: 16px;
+        z-index: 2;
+        display: inline-flex;
+        align-items: center;
+        gap: 8px;
+        padding: 5px 12px;
+        background: rgba(4, 8, 15, 0.78);
+        border: 1px solid rgba(209, 196, 233, 0.35);
+        border-radius: 8px;
+        color: #EDE7F6;
+        font-family: 'IBM Plex Mono', monospace;
+        font-size: 0.76rem;
+        font-weight: 500;
+    }
+    .fl-badge i {
+        display: inline-block;
+        width: 7px;
+        height: 7px;
+        border-radius: 50%;
+        background: var(--c-blue);
+    }
+
+    /* action pills: Grad-CAM + Re-upload */
+    .st-key-gradcam, .st-key-reupload { width: 100%; }
+    .st-key-gradcam button, .st-key-reupload button {
+        width: 100%;
+        height: 46px;
+        border-radius: 999px;
+        font-weight: 700;
+        transition: filter 0.2s ease, transform 0.15s ease, box-shadow 0.2s ease;
+    }
+    .st-key-gradcam button {
+        background: linear-gradient(135deg, var(--c-teal-a), var(--c-teal-b));
+        border: 1px solid var(--c-teal-a);
+        box-shadow: 0 4px 12px rgba(15, 118, 110, 0.32);
+    }
+    .st-key-gradcam button, .st-key-gradcam button * { color: #FFFFFF; font-weight: 700; }
+    .st-key-reupload button {
+        background: #FFFFFF;
+        border: 1.5px solid var(--c-blue);
+    }
+    .st-key-reupload button, .st-key-reupload button * { color: var(--c-navy); font-weight: 700; }
+    .st-key-gradcam button:hover, .st-key-gradcam button:focus:not(:active) {
+        border-color: var(--c-teal-a);
+        filter: brightness(1.08);
+        transform: translateY(-1px);
+    }
+    .st-key-reupload button:hover, .st-key-reupload button:focus:not(:active) {
+        border-color: var(--c-navy);
+        background: var(--c-blue-50);
+        transform: translateY(-1px);
+    }
+
+    /* =====================================================================
+       Result card
+       ===================================================================== */
+    .fl-result-title {
+        text-align: center;
+        color: var(--c-navy);
+        font-weight: 800;
+        font-size: 2.6rem;
+        line-height: 1.1;
+        letter-spacing: -0.5px;
+        margin: 6px 0 26px;
+    }
+    .fl-rows { display: flex; flex-direction: column; gap: 20px; margin-bottom: 26px; }
+    .fl-bar { height: 5px; margin-bottom: 8px; border-radius: 3px; background: #EDE7F6; }
+    .fl-bar span {
+        display: block;
+        height: 100%;
+        border-radius: 3px;
+        background: linear-gradient(90deg, #5E35B1, #7E57C2);
+    }
+    .fl-row-text {
+        display: flex;
+        align-items: baseline;
+        gap: 10px;
+        color: #512DA8;
+        font-family: 'IBM Plex Mono', monospace;
+        font-size: 1rem;
+    }
+    .fl-dots { flex: 1; border-bottom: 1px dotted #D1C4E9; transform: translateY(-4px); }
+    .fl-top .fl-row-text { color: var(--c-ink); font-weight: 600; }
+
+    /* finding status colours (green = normal, amber = watch, red = alert) */
+    .fl-status-ok    { --st-a: #22A559; --st-b: #15803D; --st-soft: #F0FDF4; --st-line: #BBF7D0; }
+    .fl-status-watch { --st-a: #E08A0B; --st-b: #B45309; --st-soft: #FFFBEB; --st-line: #FDE68A; }
+    .fl-status-alert { --st-a: #E04B4B; --st-b: #B91C1C; --st-soft: #FEF2F2; --st-line: #FECACA; }
+
+    .fl-predicted {
+        display: flex;
+        align-items: center;
+        justify-content: center;
+        padding: 14px 18px;
+        border-radius: 12px;
+        color: #FFFFFF;
+        font-weight: 700;
+        font-size: 1.15rem;
+        background: linear-gradient(135deg, var(--st-a), var(--st-b));
+        box-shadow: 0 4px 14px rgba(94, 53, 177, 0.2);
+    }
+    .fl-glyph {
+        display: inline-flex;
+        align-items: center;
+        justify-content: center;
+        width: 24px;
+        height: 24px;
+        margin-right: 10px;
+        border-radius: 50%;
+        background: rgba(255, 255, 255, 0.25);
+        font-size: 0.95rem;
+        font-weight: 800;
+    }
+
+    /* disease overview (static text under the predicted-class bar) */
+    .fl-overview {
+        margin-top: 16px;
+        padding: 16px 18px;
+        background: var(--st-soft);
+        border: 1px solid var(--st-line);
+        border-radius: 12px;
+    }
+    .fl-overview-title { color: var(--st-b); font-weight: 800; font-size: 1rem; margin-bottom: 6px; }
+    .fl-overview-text { color: #2D1A54; font-size: 0.93rem; line-height: 1.55; }
+    .fl-overview-feat { margin-top: 8px; color: #2D1A54; font-size: 0.9rem; line-height: 1.55; }
+    .fl-overview-feat b { color: var(--c-ink); }
+    .fl-overview-src { margin-top: 10px; color: var(--c-muted); font-size: 0.74rem; }
+
+    /* =====================================================================
+       Grad-CAM card
+       ===================================================================== */
+    .fl-cam-grid { display: grid; grid-template-columns: 1fr 1fr; gap: 14px; }
+    .fl-cam-stage {
+        aspect-ratio: 1 / 1;
+        display: flex;
+        align-items: center;
+        justify-content: center;
+        padding: 6px;
+        box-sizing: border-box;
+        background: #04080F;
+        border: 1px solid #0B1B30;
+        border-radius: 12px;
+    }
+    .fl-cam-stage img { max-width: 100%; max-height: 100%; object-fit: contain; border-radius: 4px; }
+    .fl-cam-cap { margin-top: 8px; text-align: center; color: var(--c-ink); font-weight: 600; font-size: 0.88rem; }
+    .fl-legend { display: flex; align-items: center; gap: 10px; margin-top: 16px; color: var(--c-muted); font-size: 0.78rem; }
+    .fl-legend-bar {
+        flex: 1;
+        height: 10px;
+        border-radius: 5px;
+        background: linear-gradient(90deg, #00007F, #0000FF, #00FFFF, #FFFF00, #FF0000, #7F0000);
+    }
+    .fl-cam-note {
+        margin-top: 10px;
+        color: var(--c-muted);
+        font-family: 'IBM Plex Mono', monospace;
+        font-size: 0.72rem;
+    }
+
+    [data-testid="stCaptionContainer"], [data-testid="stCaptionContainer"] * { color: var(--c-muted); }
+
+    /* =====================================================================
+       Phones
+       ===================================================================== */
+    @media (max-width: 640px) {
+        [data-testid="stMainBlockContainer"], .block-container { padding: 0.9rem 0.7rem 2.5rem !important; }
+        .clinical-header { padding: 1.3rem 1rem; }
+        .clinical-header h1 { font-size: 1.45rem; }
+        .clinical-header p { font-size: 0.92rem; }
+        .st-key-modality_panel, .st-key-upload_panel { padding: 16px; }
+        .fl-card { padding: 18px 16px 20px; }
+        .fl-card-title { font-size: 1.12rem; }
+        .fl-result-title { font-size: 2rem; margin-bottom: 20px; }
+        .fl-preview { height: 260px; }
+        .fl-predicted { font-size: 1rem; }
+        .st-key-modality_panel [data-testid="stRadio"] label { padding: 14px 6px 12px; }
+        .st-key-modality_panel [data-testid="stRadio"] label p { font-size: 0.92rem; }
+        .st-key-modality_panel [data-testid="stRadio"] label::after { font-size: 0.66rem; }
+    }
+    @media (max-width: 460px) {
+        .fl-cam-grid { grid-template-columns: 1fr; }
+    }
+</style>
+
+<!-- Custom Header HTML -->
+<div class="clinical-header">
+    <h1>FeLASwin-Net Diagnostic Platform</h1>
+    <p>Automated Thoracic Disease Classification via Hybrid Deep Learning</p>
+</div>
