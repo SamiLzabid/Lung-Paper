@@ -26,8 +26,6 @@ Source code and implementation details for our journal paper on lung disease cla
 - Same code evaluated on both **lung CT** and **chest X-ray** data.
 - Interactive web app for inference with explanations.
 
-> Please verify the expansions of the FETLE and AMSFA acronyms against the paper and edit them if needed.
-
 ---
 
 ## Repository Structure
@@ -135,9 +133,6 @@ Accuracy, macro-F1, and MCC are reported per severity, as the mean across severi
 
 ### 10. Explainable AI (XAI)
 - **Methods:** Grad-CAM++, Score-CAM, and Transition Matrix Heatmap, applied to the last Swin block (token sequences are reshaped to a spatial map).
-- **Qualitative:** side-by-side overlay grid per class.
-- **Quantitative faithfulness:** Deletion and Insertion AUC per class and overall, exported to CSV.
-
 ---
 
 ## Model Architecture
