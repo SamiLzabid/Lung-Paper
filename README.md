@@ -16,9 +16,6 @@ Source code and implementation details for our journal paper on lung disease cla
 - [Installation](#installation)
 - [Usage](#usage)
 - [Web App](#web-app)
-- [Citation](#citation)
-- [License](#license)
-
 ---
 
 ## Highlights
