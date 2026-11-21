@@ -39,7 +39,6 @@ Source code and implementation details for our journal paper on lung disease cla
 │   ├── Training_Evaluation_Fuctions.py  # Training loop, metrics, robustness, MC Dropout/TTA, calibration
 │   ├── Lung_CT.ipynb                    # End-to-end pipeline on the lung CT dataset
 │   ├── Chest_Xray.ipynb                 # Same pipeline on the chest X-ray dataset
-│   ├── my_dataset.py                    # Custom PyTorch Dataset (cv2 loader)
 ├── web_app/                             # Web application for inference (see Web App section)
 └── README.md
 ```
